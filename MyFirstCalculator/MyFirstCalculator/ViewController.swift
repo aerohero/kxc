@@ -15,14 +15,22 @@ class ViewController: UIViewController {
     
     var selectedOperator: Operator?
     
+    func showAlert(message: String, title: String = "알림") {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(okAction)
+        
+        present(alert, animated: true)
+    }
+    
     @IBAction func selectOperator(_ sender: Any) {
         
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let plusAction = UIAlertAction(title: "+ (더하기)", style: .default) { _ in // 컴파일러가 인식할 수 있기 때문에 파라미터의 타입과 return 타입을 생략할 수 있다.
+        let plusAction = UIAlertAction(title: "+ (더하기)", style: .default) { _ in
             self.operatorButton.setTitle("+", for: .normal)
             self.selectedOperator = .plus
-            
         }
 
         actionSheet.addAction(plusAction)
@@ -54,15 +62,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var operatorButton: UIButton!
     
     @IBOutlet weak var resultLabel: UILabel!
-
-    func showAlert(message: String, title: String = "알림") {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "확인", style: .default)
-        alert.addAction(okAction)
-        
-        present(alert, animated: true)
-    }
     
     @IBAction func calculate(_ sender: Any) {
 
@@ -110,10 +109,10 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        firstOperandField.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -124,3 +123,13 @@ class ViewController: UIViewController {
 
 }
 
+extension ViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        guard !string.isEmpty else { return true }
+        
+        guard let _ = Int(string) else { return false }
+        
+        return true
+    }
+}
